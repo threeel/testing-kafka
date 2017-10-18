@@ -11,7 +11,11 @@ case class Config(brokers: String, keySerializer: String = "org.apache.kafka.com
 
   props.put("key.serializer", keySerializer)
 
+  props.put("key.deserializer", keySerializer)
+
   props.put("value.serializer", valueSerializer)
+
+  props.put("value.deserializer", valueSerializer)
 
   def getProperties(): Properties = {
     props
@@ -21,7 +25,7 @@ case class Config(brokers: String, keySerializer: String = "org.apache.kafka.com
 object Config {
 
 
-  def env(key: String): String = {
+  def env(key: String, default: String = null): String = {
     val envVars = System.getenv()
     envVars.get(key)
   }

@@ -1,3 +1,8 @@
+import java.util.Date
+
+import org.apache.kafka.clients.producer.{ProducerRecord, RecordMetadata}
+
+import scala.util.Random
 
 object Main extends App {
 
@@ -9,9 +14,17 @@ object Main extends App {
     val message = Message.create("testing", "Testing the Message in the Queue")
     val client = new PubSub[String, String](config)
 
-    val response = client.publish(topic, message)
-
-    println(response)
+    val rnd = new Random()
+    val t = System.currentTimeMillis()
+    for (nEvents <- Range(0, 1000)) {
+      val runtime = new Date().getTime()
+      val ip = "192.168.2." + rnd.nextInt(255)
+      val msg = runtime + "," + nEvents + ",www.example.com," + ip
+      val m = Message.create(ip, msg)
+      val data = new ProducerRecord[String, String](topic, m.key, m.value)
+      val response = client.publish(topic, m)
+      println(response)
+    }
 
   }
 }
